@@ -40,9 +40,9 @@ RUN --mount=type=cache,target=/root/.cache \
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 
-# Install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
+# Install project dependencies using Poetry
 RUN --mount=type=cache,target=/root/.cache \
-    poetry install --only main
+    poetry install --no-root
 
 ################################
 # PRODUCTION
@@ -57,12 +57,8 @@ COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 WORKDIR /app
 COPY scm_frontend/ /app/
 COPY scm_frontend/.env /app/
+COPY scm_frontend/.streamlit /app/
 
-# Set the script as executable
-RUN chmod +x /app/start_streamlit.sh
-
-# Activate the virtual environment and install Streamlit
-RUN /opt/pysetup/.venv/bin/pip install streamlit
-
-# Use CMD instead of ENTRYPOINT if you don't need to override the command
-CMD ["sh", "/app/start_streamlit.sh"]
+# Set the command to start Streamlit
+ENTRYPOINT ["streamlit", "run"]
+CMD ["streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]

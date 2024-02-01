@@ -88,67 +88,60 @@ current_local_time = current_utc_time.replace(tzinfo=pytz.utc).astimezone(
 
 st.write("Current local time:", current_local_time)
 
-envdir = pathlib.Path(__file__).parent
-env_dir_path = envdir / ".env"
-
 st.title("Notification Dashboard")
 st.subheader("Slack :zap: :blue[message] summary")
 
-try:
-    df_messages = pd.DataFrame(list(collection.find({}, {"_id": 0})))
-    print(df_messages.columns)
-    st.table(df_messages)
+df_messages = pd.DataFrame(list(collection.find({}, {"_id": 0})))
+print(df_messages.columns)
+st.table(df_messages)
 
-    # Convert msg_date to datetime format if needed
-    df_messages["msg_date"] = pd.to_datetime(df_messages["msg_date"])
+# Convert msg_date to datetime format if needed
+df_messages["msg_date"] = pd.to_datetime(df_messages["msg_date"])
 
-    # Bokeh plot with a title and axis labels
-    p = figure(
-        title="Bokeh plot of Messages",
-        x_axis_label="Date",
-        y_axis_label="Messages",
-        x_axis_type="datetime",
-    )
-    p.line(
-        df_messages["msg_date"],
-        df_messages["normal"],
-        legend_label="Normal",
-        color="green",
-        line_width=2,
-    )
-    p.line(
-        df_messages["msg_date"],
-        df_messages["priority"],
-        legend_label="Priority",
-        color="orange",
-        line_width=2,
-    )
-    p.line(
-        df_messages["msg_date"],
-        df_messages["urgent"],
-        legend_label="Critical",
-        color="red",
-        line_width=2,
-    )
+# Bokeh plot with a title and axis labels
+p = figure(
+    title="Bokeh plot of Messages",
+    x_axis_label="Date",
+    y_axis_label="Messages",
+    x_axis_type="datetime",
+)
+p.line(
+    df_messages["msg_date"],
+    df_messages["normal"],
+    legend_label="Normal",
+    color="green",
+    line_width=2,
+)
+p.line(
+    df_messages["msg_date"],
+    df_messages["priority"],
+    legend_label="Priority",
+    color="orange",
+    line_width=2,
+)
+p.line(
+    df_messages["msg_date"],
+    df_messages["urgent"],
+    legend_label="Critical",
+    color="red",
+    line_width=2,
+)
 
-    # Define custom tick formatter to display day of the week
-    CODE = """
+# Define custom tick formatter to display day of the week
+CODE = """
         var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         var date = new Date(tick);
         var localDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
         var day = localDate.getDay();
         return days[day];
         """
-    p.xaxis.formatter = FuncTickFormatter(code=CODE)
+p.xaxis.formatter = FuncTickFormatter(code=CODE)
 
-    # Display the Bokeh plot using Streamlit
-    st.bokeh_chart(p, use_container_width=True)
+# Display the Bokeh plot using Streamlit
+st.bokeh_chart(p, use_container_width=True)
 
-    # Set the index of the DataFrame first
-    df_messages.set_index("msg_date", inplace=True)
+# Set the index of the DataFrame first
+df_messages.set_index("msg_date", inplace=True)
 
-    # Plot an area chart
-    st.area_chart(df_messages[["normal", "priority", "urgent"]])
-
-except EmptyDataError:
-    st.text("INFO: Database is empty")
+# Plot an area chart
+st.area_chart(df_messages[["normal", "priority", "urgent"]])

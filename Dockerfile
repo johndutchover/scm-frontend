@@ -56,9 +56,13 @@ COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 
 WORKDIR /app
 COPY scm_frontend/ /app/
+COPY scm_frontend/.env /app/
 
 # Set the script as executable
 RUN chmod +x /app/start_streamlit.sh
+
+# Activate the virtual environment and install Streamlit
+RUN /opt/pysetup/.venv/bin/pip install streamlit
 
 # Use CMD instead of ENTRYPOINT if you don't need to override the command
 CMD ["sh", "/app/start_streamlit.sh"]

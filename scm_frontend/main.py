@@ -20,14 +20,16 @@ from bokeh.models import FuncTickFormatter
 from bokeh.plotting import figure
 from pandas.errors import EmptyDataError
 from pymongo import MongoClient
+from pymongo.server_api import ServerApi
+from dotenv import load_dotenv
 
-envdir = pathlib.Path(__file__).parent
-env_dir_path = envdir / ".env"
+load_dotenv()  # take environment variables from .env
 
 # MongoDB connection string
 uri = os.environ.get("POETRY_MONGODB_URL")
 
 st.set_page_config(page_title="Dashboard", page_icon="✅")
+
 
 # Initialize connection.
 # Uses st.cache_resource to only run once.
@@ -43,7 +45,8 @@ def init_connection():
 
 client_init = init_connection()
 
-client = MongoClient(uri)
+# Set the Stable API version when creating a new client
+client = MongoClient(uri, server_api=ServerApi('1'))
 
 db = client["messagesdb"]
 collection = db["slackcoll"]

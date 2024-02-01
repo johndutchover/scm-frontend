@@ -10,12 +10,12 @@ packages = [{include = "scm_frontend"}]
 python = "^3.11"
 streamlit = ">=1.30.0"
 bokeh = "==2.4.3"
-pymongo = ">=4.3.3"
+pandas = "==2.2.0"
+pymongo = "==4.6.1"
 pytz = ">=2023.3"
 plotly = ">=5.14.1"
-pandas = ">=2.0.2"
 importlib-metadata = ">=1.4,<7"
-python-dotenv = "^1.0.0"
+python-dotenv = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
 typer = "^0.9.0"

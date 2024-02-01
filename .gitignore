@@ -278,7 +278,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+scm_frontend/.env
 .venv
 env/
 venv/

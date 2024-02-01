@@ -1,15 +1,16 @@
 # Frontend
-Slack App: ShortCircuitMe
 
-## Components
+## Features
+- Reporting for Slack App: ShortCircuitMe
 
-Prerequisites include:
+## Prerequisites
+For Development:
 - `.env` 
 - `.streamlit/secrets.toml`
 
-### Streamlit
+## Components
 
-#### Bokeh plots
+### Streamlit
 
 ### MongoDB Atlas
 
@@ -20,6 +21,3 @@ MongoClient is a client-side representation of the MongoDB cluster.
 ##### Behavior
 - Streamlit connects to MongoDB.
 - does **not** require exposing a public HTTP Request URL
-
-##### Features
-
